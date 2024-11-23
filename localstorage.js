@@ -42,7 +42,7 @@ function selected(pos) {
         localStorage.setItem("savedCharacters", listString)
         renderCharacters(characters)
     } else {
-        // TODO: Remove item
+        
     }
 }
 

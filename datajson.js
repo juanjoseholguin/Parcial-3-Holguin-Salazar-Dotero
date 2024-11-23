@@ -1,13 +1,12 @@
-
-import { data } from './datajs'; 
-
+// Definición de la clase Product
 class Product {
-    constructor(title, price, description, size, color, image) {
+    constructor(title, price, description, size, color, disponible, image) {
         this.title = title;
         this.price = price;
         this.description = description;
         this.size = size;
         this.color = color;
+        this.disponible = disponible;
         this.image = image;
     }
 
@@ -19,36 +18,52 @@ class Product {
                 <p>${this.description}</p>
                 <p>Price: $${this.price}</p>
                 <p>Available Sizes: ${this.size.join(", ")}</p>
+                <p>Colors: ${this.color.join(", ")}</p>
+                <p>Available: ${this.disponible} units</p>
                 <button onclick="addToFavorites(${index})">Add to Favorites</button>
             </div>
         `;
     }
 }
 
+
 let products = [];
 
-function parseDataToProducts() {
-    if (data && Array.isArray(data)) {
-        products = data.map(item => new Product(
-            item.Title,
-            item.Price,
-            item.Description,
-            item.Size,
-            item.Color,
-            item.Image
-        ));
-        renderAllProducts();
-    } else {
-        console.error('No se pudo cargar los datos correctamente.');
+
+async function fetchData() {
+    try {
+        const response = await fetch('data.json'); 
+        const data = await response.json();
+
+        
+        if (Array.isArray(data)) {
+            
+            products = data.map(item => new Product(
+                item.Title,
+                item.Price,
+                item.Description,
+                item.Size,
+                item.Color,
+                item.Disponible,
+                item.Image
+            ));
+            renderAllProducts();
+        } else {
+            console.error('El formato de los datos no es correcto.');
+        }
+    } catch (error) {
+        console.error('Error al cargar los datos:', error);
     }
 }
 
+
 function renderAllProducts() {
     const productsContainer = document.getElementById("products");
-    productsContainer.innerHTML = "";
+    productsContainer.innerHTML = ""; 
     products.forEach((product, index) => {
         productsContainer.innerHTML += product.htmlCard(index);
     });
 }
 
-document.addEventListener("DOMContentLoaded", parseDataToProducts);
+
+document.addEventListener("DOMContentLoaded", fetchData);

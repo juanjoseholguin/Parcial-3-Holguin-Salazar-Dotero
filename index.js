@@ -9,11 +9,11 @@ function parseDataToProducts() {
     return;
   }
 
-  // Limpiar contenedor antes de renderizar
+  
   productsContainer.innerHTML = "";
-  products = [];  // Reiniciar array para evitar duplicados
+  products = []; 
 
-  // Renderizar todos los productos sin filtrar favoritos
+ 
   data.forEach((item, index) => {
     let product = new Product(
       item.Title,
@@ -28,18 +28,17 @@ function parseDataToProducts() {
   });
 }
 
-// Función para redirigir al detalle del producto seleccionado
+
 function productselected(pos) {
   const selectedProduct = products[pos];
   window.location.href = `detallesproducto.html?name=${encodeURIComponent(selectedProduct.Title)}`;
 }
 
-// Evento de filtro de búsqueda
 document.querySelector(".search-bar input").addEventListener("input", (event) => {
   filterProducts(event.target.value);
 });
 
-// Cargar productos al iniciar
+
 document.addEventListener("DOMContentLoaded", function() {
   parseDataToProducts();
 });
