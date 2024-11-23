@@ -1,69 +1,89 @@
-// Definición de la clase Product
+
 class Product {
-    constructor(title, price, description, size, color, disponible, image) {
-        this.title = title;
-        this.price = price;
-        this.description = description;
-        this.size = size;
-        this.color = color;
-        this.disponible = disponible;
-        this.image = image;
+    constructor(Title, Price, Description, Size, Color, Image) {
+      this.Title = Title;
+      this.Price = Price;
+      this.Description = Description;
+      this.Size = Size;
+      this.Color = Color;
+      this.Image = Image;
     }
-
+  
+    
     htmlCard(index) {
-        return `
-            <div class="product-card">
-                <img src="${this.image}" alt="${this.title}">
-                <h3>${this.title}</h3>
-                <p>${this.description}</p>
-                <p>Price: $${this.price}</p>
-                <p>Available Sizes: ${this.size.join(", ")}</p>
-                <p>Colors: ${this.color.join(", ")}</p>
-                <p>Available: ${this.disponible} units</p>
-                <button onclick="addToFavorites(${index})">Add to Favorites</button>
-            </div>
-        `;
+      return `
+        <div class="product-card" onclick="productselected(${index})">
+          <img src="${this.Image}" alt="${this.Title}">
+          <h3>${this.Title}</h3>
+          <p>${this.Description}</p>
+          <p>Price: $${this.Price}</p>
+        </div>
+      `;
     }
-}
-
-
-let products = [];
-
-
-async function fetchData() {
-    try {
-        const response = await fetch('data.json'); 
-        const data = await response.json();
-
-        
-        if (Array.isArray(data)) {
-            
-            products = data.map(item => new Product(
-                item.Title,
-                item.Price,
-                item.Description,
-                item.Size,
-                item.Color,
-                item.Disponible,
-                item.Image
-            ));
-            renderAllProducts();
-        } else {
-            console.error('El formato de los datos no es correcto.');
-        }
-    } catch (error) {
-        console.error('Error al cargar los datos:', error);
-    }
-}
-
-
-function renderAllProducts() {
+  }
+  
+  
+  let products = [];
+  
+  function parseDataToProducts() {
     const productsContainer = document.getElementById("products");
-    productsContainer.innerHTML = ""; 
-    products.forEach((product, index) => {
-        productsContainer.innerHTML += product.htmlCard(index);
+  
+   
+    productsContainer.innerHTML = "";
+  
+    
+    if (!data || data.length === 0) {
+      console.error("No hay productos en data.js.");
+      return;
+    }
+  
+    
+    data.forEach((item, index) => {
+      let product = new Product(
+        item.Title,
+        item.Price,
+        item.Description,
+        item.Size,
+        item.Color,
+        item.Image
+      );
+      products.push(product);
+      productsContainer.innerHTML += product.htmlCard(index);
     });
-}
+  }
+  
+  function filterProducts(query) {
+    let filteredProducts = products.filter(product =>
+      product.Title.toLowerCase().includes(query.toLowerCase()) ||
+      product.Description.toLowerCase().includes(query.toLowerCase()) ||
+      product.Size.some(size => size.toLowerCase().includes(query.toLowerCase())) ||
+      product.Color.some(color => color.toLowerCase().includes(query.toLowerCase()))
+    );
+  
+    renderProducts(filteredProducts);
+  }
+  
+  
+  function renderProducts(productsList) {
+    const productsContainer = document.getElementById("products");
+    productsContainer.innerHTML = "";  
+  
+    if (productsList.length === 0) {
+      productsContainer.innerHTML = "<p>No se encontraron productos.</p>";
+    }
+  
+    productsList.forEach((product, index) => {
+      productsContainer.innerHTML += product.htmlCard(index);
+    });
+  }
+  
 
-
-document.addEventListener("DOMContentLoaded", fetchData);
+  document.querySelector("#search-input").addEventListener("input", (event) => {
+    filterProducts(event.target.value);
+  });
+  
+ 
+  document.addEventListener("DOMContentLoaded", function() {
+    parseDataToProducts();
+  });
+  
