@@ -55,7 +55,7 @@ function renderProducts(productsList) {
     productsContainer.innerHTML = "<p>No se encontraron productos.</p>";
   }
 
-  // Renderiza cada producto filtrado
+  
   productsList.forEach((product, index) => {
     productsContainer.innerHTML += product.htmlCard(index);
   });
