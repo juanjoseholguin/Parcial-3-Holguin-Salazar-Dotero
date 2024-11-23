@@ -32,17 +32,13 @@ function parseDataToProducts() {
 }
 
 
-function filterProducts(query) {
-  
+function filterProducts(query) {  
   if (query.length < 1) {
     renderProducts(products);
     return;
-  }
-
-  
+  } 
   const filteredProducts = products.filter(product =>
-    product.Title.toLowerCase().includes(query.toLowerCase()) ||
-    product.Description.toLowerCase().includes(query.toLowerCase())
+    product.Title.toLowerCase().includes(query.toLowerCase()) 
   );
   
 
